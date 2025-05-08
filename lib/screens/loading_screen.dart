@@ -1,7 +1,11 @@
 import 'package:clima/services/location.dart';
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
+
+const apiKey = '43bafc3ecb8dd6e80af39f2338df7307';
+// const openWeatherMapURL =
+//     'https://api.openweathermap.org/data/2.5/weather?';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,9 +13,26 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  Future<void> getLocation() async {
+  @override
+  void initState() {
+    super.initState();
+    getLocationData();
+  }
+
+  double? latitude;
+  double? longitude;
+  Future<void> getLocationData() async {
     bool serviceEnabled;
     LocationPermission permission;
+
+    // Get the current position
+    Location location = Location();
+    await location.getCurrentLocation();
+    latitude = location.latitude;
+    longitude = location.longitude;
+    NetworkHelper networkHelper = NetworkHelper(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+    var weatherData = await networkHelper.getData();
 
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -31,33 +52,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
     if (permission == LocationPermission.deniedForever) {
       return Future.error('Location permissions are permanently denied');
     }
-
-    // Get the current position
-    Location location = Location();
-    await location.getCurrentLocation();
-    print('this is your latitude: ${location.latitude}');
-    print('this is your Longitude: ${location.longitude}');
-  }
-
-  getData() async {
-    http.Response response = await http.get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=London&appid=43bafc3ecb8dd6e80af39f2338df7307'));
-    if (response.statusCode == 200) {
-      String data = response.body;
-      print(data);
-    } else {
-      print(response.statusCode);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    getData();
     return Scaffold(
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            getLocation();
+            getLocationData();
             //Get the current location
           },
           child: Text('Get Location'),
