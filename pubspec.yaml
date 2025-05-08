@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   http: ^1.4.0 # Needed for fetching weather data
   geolocator: ^10.1.0
+  flutter_spinkit: ^5.2.1
 
 dev_dependencies:
   flutter_test:
