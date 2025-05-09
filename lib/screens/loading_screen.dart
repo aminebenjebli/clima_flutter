@@ -1,6 +1,5 @@
 import 'package:clima/screens/location_screen.dart';
-import 'package:clima/services/location.dart';
-import 'package:clima/services/networking.dart';
+import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,14 +24,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Get the current position
-    Location location = Location();
-    await location.getCurrentLocation();
-
-    // Get weather data
-    NetworkHelper networkHelper = NetworkHelper(
-        'https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
-    var weatherData = await networkHelper.getData();
+    var weatherData = await WeatherModel().getLocationWeather();
+    // Navigate to the LocationScreen with the weather data
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return LocationScreen(
         locationWeather: weatherData,
