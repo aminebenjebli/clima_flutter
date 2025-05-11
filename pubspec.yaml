@@ -24,6 +24,10 @@ flutter:
 
   assets:
     - images/
+    - images/hot.jpeg
+    - images/warm.jpeg
+    - images/mild.jpeg
+    - images/cold.jpeg
 
   fonts:
     - family: Spartan MB

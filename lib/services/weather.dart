@@ -48,10 +48,25 @@ class WeatherModel {
       return 'Bring a 🧥 just in case';
     }
   }
+
   Future<dynamic> getCityWeather(String cityName) async {
-    NetworkHelper networkHelper = NetworkHelper(
-        '$openWeatherUrl?q=$cityName&appid=$apiKey&units=metric');
+    NetworkHelper networkHelper =
+        NetworkHelper('$openWeatherUrl?q=$cityName&appid=$apiKey&units=metric');
     var weatherData = await networkHelper.getData();
     return weatherData;
+  }
+
+  String getBackgroundImage(int? temperature) {
+    if (temperature == null) return 'images/location_background.jpg';
+
+    if (temperature > 25) {
+      return 'images/hot.jpeg'; // Hot weather background
+    } else if (temperature > 20) {
+      return 'images/warm.jpeg'; // Warm weather background
+    } else if (temperature < 10) {
+      return 'images/cold.jpeg'; // Cold weather background
+    } else {
+      return 'images/mild.jpeg'; // Mild weather background
+    }
   }
 }
